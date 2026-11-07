@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS users (telegram_id BIGINT PRIMARY KEY, state TEXT, receiver_cell_id BIGINT, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
+CREATE TABLE IF NOT EXISTS cells (id BIGSERIAL PRIMARY KEY, telegram_user_id BIGINT NOT NULL REFERENCES users(telegram_id) ON DELETE CASCADE, name VARCHAR(60) NOT NULL, is_inbox BOOLEAN NOT NULL DEFAULT FALSE, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
+CREATE UNIQUE INDEX IF NOT EXISTS cells_user_name_unique ON cells (telegram_user_id, LOWER(name)) WHERE is_inbox = FALSE;
+CREATE TABLE IF NOT EXISTS materials (id BIGSERIAL PRIMARY KEY, telegram_user_id BIGINT NOT NULL REFERENCES users(telegram_id) ON DELETE CASCADE, cell_id BIGINT REFERENCES cells(id), source_chat_id BIGINT, source_message_id BIGINT, media_group_id TEXT, kind TEXT NOT NULL, text_content TEXT, file_ids JSONB NOT NULL DEFAULT '[]'::jsonb, raw_message JSONB NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), deleted_at TIMESTAMPTZ);
+CREATE INDEX IF NOT EXISTS materials_cell_idx ON materials (telegram_user_id, cell_id, created_at DESC);

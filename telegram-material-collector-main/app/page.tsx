@@ -1,0 +1,1 @@
+export default function Home(){return <main style={{maxWidth:680,margin:"40px auto",lineHeight:1.6}}><h1>Telegram Material Collector</h1><p>Серверная часть бота запущена.</p><p>Проверка: <a href="/api/health">/api/health</a></p></main>;}
